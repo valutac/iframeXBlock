@@ -1,44 +1,37 @@
 """Setup for edx_iframe XBlock."""
 
-from __future__ import absolute_import
-
 import os
-
 from setuptools import setup
 
 
-def package_data(pkg, roots):
-    """Generic function to find package_data.
-
-    All of the files under each of the `roots` will be declared as package
-    data for package `pkg`.
-
-    """
+def package_data(pkg, root):
+    """Generic function to find package_data for `pkg` under `root`."""
     data = []
-    for root in roots:
-        for dirname, _, files in os.walk(os.path.join(pkg, root)):
-            for fname in files:
-                data.append(os.path.relpath(os.path.join(dirname, fname), pkg))
+    for dirname, _, files in os.walk(os.path.join(pkg, root)):
+        for fname in files:
+            data.append(os.path.relpath(os.path.join(dirname, fname), pkg))
+
+    for dirname, _, files in os.walk(os.path.join(pkg, 'translations')):
+        for fname in files:
+            data.append(os.path.relpath(os.path.join(dirname, fname), pkg))
 
     return {pkg: data}
-
 
 setup(
     name='edx_iframe-xblock',
     version='0.1',
-    description='edx_iframe XBlock',   # TODO: write a better description.
+    description='iFrame XBlock',   # TODO: write a better description.
     license='UNKNOWN',          # TODO: choose a license: 'AGPL v3' and 'Apache 2.0' are popular.
     packages=[
         'edx_iframe',
     ],
     install_requires=[
         'XBlock',
-        'xblock-utils',
     ],
     entry_points={
         'xblock.v1': [
             'edx_iframe = edx_iframe:iFrameXBlock',
         ]
     },
-    package_data=package_data("edx_iframe", ["static", "public"]),
+    package_data=package_data(["edx_iframe", "static"]),
 )
