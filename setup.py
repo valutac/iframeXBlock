@@ -11,10 +11,6 @@ def package_data(pkg, root):
         for fname in files:
             data.append(os.path.relpath(os.path.join(dirname, fname), pkg))
 
-    for dirname, _, files in os.walk(os.path.join(pkg, 'translations')):
-        for fname in files:
-            data.append(os.path.relpath(os.path.join(dirname, fname), pkg))
-
     return {pkg: data}
 
 setup(
@@ -33,5 +29,5 @@ setup(
             'edx_iframe = edx_iframe:iFrameXBlock',
         ]
     },
-    package_data=package_data(["edx_iframe", "static"]),
+    package_data=package_data("edx_iframe", "static"),
 )

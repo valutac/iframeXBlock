@@ -1,17 +1,17 @@
-"""TO-DO: Write a description of what this XBlock is."""
+"""iFrame Main"""
 import pkg_resources
+from django.template import Context, Template
 
+from web_fragments.fragment import Fragment
 from xblock.core import XBlock
-from xblock.fields import Scope, List, Integer, String, Boolean
-from xblock.fragment import Fragment
-from xblockutils.resources import ResourceLoader
+from xblock.fields import Scope, Integer, String, Boolean
 from xblockutils.studio_editable import StudioEditableXBlockMixin
 
 _ = lambda text: text
 
 class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
     """
-    File Assessment XBlock: file assessment xblock for open edx.
+    Fields iFrameXBlock
     """
 
     display_name = String(
@@ -21,9 +21,9 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
         default=_('iFrame XBlock'),
     )
 
-    banner_url = String(
-        display_name=_('Banner URL'),
-        help=_('The banner file for user to view.'),
+    iframe_source = String(
+        display_name=_('iFrame Source'),
+        help=_('The source content for user to view.'),
         scope=Scope.settings,
         default=None,
     )
@@ -42,18 +42,22 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
         default='610px',
     )
 
-    editable_fields = ('display_name', 'banner_url', 'width_content', 'height_content')
+    custom_style = String(
+        display_name=_('Custom Style'),
+        help=_('Custom style frame (css)'),
+        Scope=Scope.settings,
+        default=None,
+    )
 
-    def _get_context(self):
-        return {
-            'display_name': self.display_name,
-            'banner_url': self.banner_url,
-            'width_content': self.width_content,
-            'height_content': self.height_content,
-        }
+    editable_fields = ('display_name', 'iframe_source', 'width_content', 'height_content','custom_style')
 
+    """
+    Util functions
+    """
     def resource_string(self, path):
-        """Handy helper for getting resources from our kit."""
+        """
+        Gets the content of a resource
+        """
         data = pkg_resources.resource_string(__name__, path)
         return data.decode('utf8')
 
@@ -61,36 +65,27 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
         """
         Evaluate a template by resource path, applying the provided context
         """
-        return ResourceLoader(__name__).render_mako_template(template_path, context)
+        template_str = self.resource_string(template_path)
+        return Template(template_str).render(Context(context))
 
+    """
+    Main functions
+    """
     def student_view(self, context=None):
         """
         The primary view of the iFrameXBlock, shown to students
         when viewing courses.
         """
+        context = {
+            'display_name': self.display_name,
+            'iframe_source': self.iframe_source,
+            'width_content': self.width_content,
+            'height_content': self.height_content,
+            'custom_style': self.custom_style
+        }
+
         html = self.render_template('static/html/edx_iframe.html', context)
 
-        frag = Fragment()
-        frag.add_content(html)
+        frag = Fragment(html)
+        frag.initialize_js('iFrameXBlockInitView')
         return frag
-
-    def context(self, request, suffix=''):  # pylint: disable=unused-argument
-        return self._get_context()
-
-    # TO-DO: change this to create the scenarios you'd like to see in the
-    # workbench while developing your XBlock.
-    @staticmethod
-    def workbench_scenarios():
-        """A canned scenario for display in the workbench."""
-        return [
-            ("iFrameXBlock",
-             """<edx_iframe/>
-             """),
-            ("Multiple iFrameXBlock",
-             """<vertical_demo>
-                <edx_iframe/>
-                <edx_iframe/>
-                <edx_iframe/>
-                </vertical_demo>
-             """),
-        ]

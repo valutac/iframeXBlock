@@ -1,5 +1,5 @@
 <div class="edx_iframe_block" id="app">
-    <iframe style="min-width: 100%; height: {{ context.height_content }}; width: {{ context.width_content }}; overflow: hidden;" src="{{ context.banner_url }}" frameborder="0" scrolling="no"></iframe>
+    <iframe style="min-width: 100%; height: {{ height_content }}; width: {{ width_content }}; overflow: hidden; {% if custom_style is not None %}{{ custom_style }}{% endif %}" src="{{ iframe_source }}" frameborder="0" scrolling="no"></iframe>
     <!-- static content-->
     <!-- static content-->
 </div>
