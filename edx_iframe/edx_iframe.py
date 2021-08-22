@@ -59,7 +59,7 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
         Gets the content of a resource
         """
         data = pkg_resources.resource_string(__name__, path)
-        return data.decode('utf8')
+        return unicode(data)
 
     def render_template(self, template_path, context={}):
         """
@@ -87,5 +87,4 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
         html = self.render_template('static/html/edx_iframe.html', context)
 
         frag = Fragment(html)
-        frag.initialize_js('iFrameXBlockInitView')
         return frag
