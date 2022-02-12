@@ -2,12 +2,20 @@
 import pkg_resources
 from django.template import Context, Template
 
-from web_fragments.fragment import Fragment
 from xblock.core import XBlock
 from xblock.fields import Scope, Integer, String, Boolean
+from xblock.fragment import Fragment
 from xblockutils.studio_editable import StudioEditableXBlockMixin
 
 _ = lambda text: text
+
+class Constants(object):
+    """
+    Namespace class for various constants
+    """
+    IFRAME = "iframe"
+    AUDIO = "audio"
+    IMAGE = "image"
 
 class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
     """
@@ -22,34 +30,46 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
     )
 
     iframe_source = String(
-        display_name=_('iFrame Source'),
+        display_name=_('Content Source'),
         help=_('The source content for user to view.'),
         scope=Scope.settings,
-        default=None,
+        default='https://developmentx.s3.amazonaws.com/sample.pdf',
+    )
+
+    content_type = String(
+        display_name=_('Content Type'),
+        help=_('The content type.'),
+        scope=Scope.settings,
+        values=[
+            {"display_name": _("iFrame"), "value": Constants.IFRAME},
+            {"display_name": _("Audio"), "value": Constants.AUDIO},
+            {"display_name": _("Image"), "value": Constants.IMAGE},
+        ],
+        default=Constants.IFRAME,
     )
 
     width_content = String(
         display_name=_('Width Content'),
-        help=_('The size content'),
+        help=_('The size content (CSS Style)'),
         scope=Scope.settings,
         default='100%',
     )
 
     height_content = String(
         display_name=_('Height Content'),
-        help=_('The size content'),
+        help=_('The size content (CSS Style)'),
         scope=Scope.settings,
         default='610px',
     )
 
     custom_style = String(
         display_name=_('Custom Style'),
-        help=_('Custom style frame (css)'),
+        help=_('Custom style content (CSS)'),
         Scope=Scope.settings,
         default=None,
     )
 
-    editable_fields = ('display_name', 'iframe_source', 'width_content', 'height_content','custom_style')
+    editable_fields = ('display_name', 'iframe_source', 'content_type', 'width_content', 'height_content','custom_style',)
 
     """
     Util functions
@@ -59,7 +79,7 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
         Gets the content of a resource
         """
         data = pkg_resources.resource_string(__name__, path)
-        return unicode(data)
+        return data.decode('utf8')
 
     def render_template(self, template_path, context={}):
         """
@@ -79,6 +99,7 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
         context = {
             'display_name': self.display_name,
             'iframe_source': self.iframe_source,
+            'content_type': self.content_type,
             'width_content': self.width_content,
             'height_content': self.height_content,
             'custom_style': self.custom_style

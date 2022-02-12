@@ -1,5 +1,16 @@
 <div class="edx_iframe_block" id="app">
-    <iframe style="min-width: 100%; height: {{ height_content }}; width: {{ width_content }}; overflow: hidden; {% if custom_style is not None %}{{ custom_style }}{% endif %}" src="{{ iframe_source }}" frameborder="0" scrolling="no"></iframe>
+    {% if content_type == 'iframe' %}
+    <iframe style="min-width: 100%; height: {{ height_content }}; width: {{ width_content }}; overflow: hidden; {% if custom_style is not None %}{{ custom_style }}{% endif %}" src="{{ iframe_source }}" frameborder="0" scrolling="no">
+        Sorry your browser does not support inline frames.
+    </iframe>
+    {% elif content_type == 'audio' %}
+    <audio controls style="margin: 0 auto; display: block; {% if custom_style is not None %}{{ custom_style }}{% endif %}">
+        <source src="{{ iframe_source }}">
+        Sorry your browser does not support the audio element.
+    </audio>
+    {% elif content_type == 'image' %}
+    <img src="{{ iframe_source }}" style="width: {{ width_content }}; height: {{ height_content }}; {% if custom_style is not None %}{{ custom_style }}{% endif %}" />
+    {% endif %}
     <!-- static content-->
     <!-- static content-->
 </div>
