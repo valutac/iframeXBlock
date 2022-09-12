@@ -16,6 +16,7 @@ class Constants(object):
     IFRAME = "iframe"
     AUDIO = "audio"
     IMAGE = "image"
+    PDFJS = "pdfjs"
 
 class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
     """
@@ -44,6 +45,7 @@ class iFrameXBlock(StudioEditableXBlockMixin, XBlock):
             {"display_name": _("iFrame"), "value": Constants.IFRAME},
             {"display_name": _("Audio"), "value": Constants.AUDIO},
             {"display_name": _("Image"), "value": Constants.IMAGE},
+            {"display_name": _("PDF.js"), "value": Constants.PDFJS},
         ],
         default=Constants.IFRAME,
     )

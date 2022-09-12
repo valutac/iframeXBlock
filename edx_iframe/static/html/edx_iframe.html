@@ -10,6 +10,8 @@
     </audio>
     {% elif content_type == 'image' %}
     <img src="{{ iframe_source }}" style="width: {{ width_content }}; height: {{ height_content }}; {% if custom_style is not None %}{{ custom_style }}{% endif %}" />
+    {% elif content_type == 'pdfjs' %}
+    <iframe id="pdf-js-viewer" src="https://developmentx.s3.amazonaws.com/pdfjs/web/viewer.html?file={{ iframe_source }}" title="webviewer" frameborder="0" style="min-width: 100%; height: {{ height_content }}; width: {{ width_content }}; overflow: hidden; {% if custom_style is not None %}{{ custom_style }}{% endif %}"></iframe>
     {% endif %}
     <!-- static content-->
     <!-- static content-->
